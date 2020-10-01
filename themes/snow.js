@@ -91,10 +91,16 @@ class SnowTooltip extends BaseTooltip {
         if (link != null) {
           this.linkRange = new Range(range.index - offset, link.length());
           let preview = LinkBlot.formats(link.domNode);
-          this.preview.textContent = preview;
-          this.preview.setAttribute('href', preview);
-          this.show();
-          this.position(this.quill.getBounds(this.linkRange));
+          // we were not in focus, open the link instead and blur
+          if (oldRange === null) {
+            window.open(preview, '_blank');
+            this.quill.blur();
+          } else {
+            this.preview.textContent = preview;
+            this.preview.setAttribute('href', preview);
+            this.show();
+            this.position(this.quill.getBounds(this.linkRange));
+          }
           return;
         }
       } else {
